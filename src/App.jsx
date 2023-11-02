@@ -1,9 +1,12 @@
-import MainLayout from "./components/layout/MainLayout";
+import { Outlet } from "react-router-dom";
+import MainLayout from "./layout/MainLayout";
 
 const App = () => {
   return (
     <div>
-       <MainLayout></MainLayout>
+      <MainLayout>
+        <Outlet></Outlet>
+      </MainLayout>
     </div>
   );
 };
