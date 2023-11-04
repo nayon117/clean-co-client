@@ -1,9 +1,31 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useState } from "react";
+import useAuth from "../hooks/useAuth";
+import toast from "react-hot-toast";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const { signIn, user } = useAuth();
+  const navigate = useNavigate();
+  console.log(user);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const email = form.email.value;
+    const password = form.password.value;
+
+    const toastId = toast.loading("logging in");
+
+    try {
+      await signIn(email, password);
+      toast.success("logged in", { id: toastId });
+      navigate("/");
+    } catch (error) {
+      toast.error(error.message,{id:toastId});
+    }
+  };
 
   return (
     <section className="bg-gray-50 dark:bg-gray-900">
@@ -13,7 +35,7 @@ const Login = () => {
             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
               Sign in to your account
             </h1>
-            <form className="space-y-4 md:space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
               <div>
                 <label
                   htmlFor="email"

@@ -1,62 +1,30 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
-import { FaEye,FaEyeSlash } from 'react-icons/fa';
- 
-
+import {  useState } from "react";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import useAuth from "../hooks/useAuth";
 
 const Register = () => {
+  // state
 
-  // state 
-  const [registerError, setRegisterError] = useState('')
-  const [success, setSuccess] = useState('')
   const [showPassword, setShowPassword] = useState(false);
-   
-  // context 
-    
-  // onclick function 
-  const handleRegister = (e) => {
-    e.preventDefault()
-    const form = new FormData(e.currentTarget)
-    // const name = form.get('name')
-    // const email = form.get('email')
-    const password = form.get('password')
-    const check = e.target.check.checked;
-       
+  
+  // context
+  const {createUser} = useAuth()
 
-    // reset error and success
-    setRegisterError('')
-    setSuccess('')
-    
-    // password validation 
-    if (password.length < 6) {
-      setRegisterError('password should be atleast 6 characters or longer ')
-      return;
-    }
-    else if (!/[A-Z]/.test(password)) {
-      setRegisterError('your password should have at least one uppercase character')
-      return;
-    }
-    else if (!check) {
-      setRegisterError('please accept our terms and conditions')
-      return;
-    }
+  // onclick function
+  const handleSubmit =async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const email = form.email.value;
+    const password = form.password.value;
 
-    //   // create User
-    //   createUser(email, password)
-    //     .then(res => {
-    //     console.log(res.user);
-    //       setSuccess('user created successfully')
-          
-    //       // update profile 
-    //       handleUpdateProfile(name)
-    //         .then(() => {
-    //         console.log('profile updated');
-    //         })
-    //         .catch(error => {
-    //         console.log(error);
-    //       })
-    
-   
+     try {
+      await createUser(email,password)
+     } catch (error) {
+      console.log(error);
+     }
+
+
   };
   return (
     <section className="bg-gray-50   dark:bg-gray-900">
@@ -66,7 +34,7 @@ const Register = () => {
             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
               Sign up to your account
             </h1>
-            <form onSubmit={handleRegister} className="space-y-3  md:space-y-4" >
+            <form onSubmit={handleSubmit} className="space-y-3  md:space-y-4">
               <div>
                 <label
                   htmlFor="name"
@@ -80,7 +48,7 @@ const Register = () => {
                   id="text"
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="your name"
-                  required
+                   
                 />
               </div>
               <div>
@@ -94,6 +62,7 @@ const Register = () => {
                   type="email"
                   name="email"
                   id="email"
+                
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="name@company.com"
                   required
@@ -112,13 +81,19 @@ const Register = () => {
                     name="password"
                     id="password"
                     placeholder="••••••••"
+                    
                     className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600  w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     required
                   />
-                  <span onClick={() => setShowPassword(!showPassword)} className="absolute right-2">
-                    {
-                      showPassword ? <FaEyeSlash className="text-xl text-gray-500" /> : <FaEye className="text-xl text-gray-500" />
-                    }
+                  <span
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-2"
+                  >
+                    {showPassword ? (
+                      <FaEyeSlash className="text-xl text-gray-500" />
+                    ) : (
+                      <FaEye className="text-xl text-gray-500" />
+                    )}
                   </span>
                 </div>
               </div>
@@ -131,7 +106,6 @@ const Register = () => {
                       type="checkbox"
                       name="check"
                       className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
-                      
                     />
                   </div>
                   <div className="ml-3 text-sm">
@@ -143,18 +117,14 @@ const Register = () => {
                     </label>
                   </div>
                 </div>
-                
               </div>
-              <button
-                type="submit"
-                className="w-full btn btn-secondary"
-              >
+              <button type="submit" className="w-full btn btn-secondary">
                 Sign up
               </button>
               <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                 Already have an account?
-                <Link to='/login'
-                   
+                <Link
+                  to="/login"
                   className="font-medium text-primary-600 hover:underline dark:text-primary-500 ml-2"
                 >
                   Sign In
@@ -163,17 +133,10 @@ const Register = () => {
               {/* <p className="divider">or</p> 
            <SocialLogin></SocialLogin>           */}
             </form>
-            {
-              registerError && <p className="text-red-700">{registerError}</p>
-            }
-            {
-              success && <p className="text-green-700">{success}</p>
-            }
           </div>
         </div>
       </div>
     </section>
   );
-
-}
-  export default Register;
+};
+export default Register;
