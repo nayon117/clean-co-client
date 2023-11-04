@@ -15,7 +15,7 @@ const myCreatedRoute = createBrowserRouter([
         errorElement: <ErrorPage></ErrorPage>,
         children: [
             {
-                path: '',
+                index:true,
                 element:<Home></Home>
             },
             {
@@ -37,7 +37,7 @@ const myCreatedRoute = createBrowserRouter([
         element: <AdminLayout></AdminLayout>,
         children: [
             {
-                path: 'addservice',
+                 index:true,
                 element:<AddService></AddService>
             }
         ]
